@@ -1,0 +1,20 @@
+{
+    "name": "cc-bgm-crossover",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "npx esbuild --target=es2018 --format=esm --platform=node --bundle --sourcemap=inline --outfile=plugin.js src/plugin.ts",
+        "watch": "npx esbuild --target=es2018 --format=esm --platform=node --bundle --sourcemap=inline --watch --outfile=plugin.js src/plugin.ts",
+        "build": "npx esbuild --target=es2018 --format=esm --platform=node --bundle --outfile=plugin.js --minify-syntax --minify-whitespace src/plugin.ts",
+        "format": "prettier ./src -w; npx prettier ./assets -w --tab-width 4 --no-semi --print-width 500 --bracket-same-line"
+    },
+    "type": "module",
+    "devDependencies": {
+        "@types/jquery": "^3.5.32",
+        "@types/node": "^11.15.54",
+        "ccmodmanager": "github:CCDirectLink/CCModManager",
+        "esbuild": "^0.20.2",
+        "prettier": "3.2.4",
+        "typescript": "^5.8.2",
+        "ultimate-crosscode-typedefs": "github:krypciak/ultimate-crosscode-typedefs"
+    }
+}
