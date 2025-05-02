@@ -13,6 +13,11 @@ declare global {
 }
 declare global {
     namespace ig {
+        namespace Music {
+            interface Track {
+                track: ig.TrackWebAudio
+            }
+        }
         interface Music {
             crossover?: boolean
             crossoverMode?: ig.BGM_DEFAULT_TRACKS.CrossfaceConfig
@@ -21,23 +26,36 @@ declare global {
         }
     }
 }
+
+const debug = false
+
 export function injectBgmCrossover() {
     /* run in prestart */
     ig.Bgm.inject({
         pushDefaultTrackType(type, mode) {
-            if (!this.mapDefaultTrackSet) return this.parent(type, mode)
+            if (ig.game.isReset || !this.mapDefaultTrackSet) return this.parent(type, mode)
             const targetMode = ig.BGM_DEFAULT_TRACKS[this.mapDefaultTrackSet.name].fieldBattleCrossface
             if (!targetMode || (type != 'field' && type != 'battle' && type != 'rankBattle'))
                 return this.parent(type, mode)
+            if (debug) {
+                console.groupCollapsed('push', type)
+                console.trace()
+                console.groupEnd()
+            }
             ig.music.crossover = true
             ig.music.crossoverMode = targetMode
             this.parent(type, 'FAST')
         },
         popDefaultTrackType(mode) {
-            if (!this.mapDefaultTrackSet) return this.parent(mode)
+            if (ig.game.isReset || !this.mapDefaultTrackSet) return this.parent(mode)
             const type = this.defaultTrackTypeStack.last()
             const targetMode = ig.BGM_DEFAULT_TRACKS[this.mapDefaultTrackSet.name].fieldBattleCrossface
             if (!targetMode || (type != 'field' && type != 'battle' && type != 'rankBattle')) return this.parent(mode)
+            if (debug) {
+                console.groupCollapsed('pop', type)
+                console.trace()
+                console.groupEnd()
+            }
             ig.music.crossover = true
             ig.music.crossoverMode = targetMode
             this.parent('FAST')
@@ -57,31 +75,31 @@ export function injectBgmCrossover() {
         _playTopSong() {
             if (!this.crossover || !this.crossoverMode) return this.parent()
             const t = this.currentTrack.track
-            if (!(t instanceof ig.TrackWebAudio)) throw new Error('not supported')
             ig.music.crossoverTrackData = { startTime: t._startTime, loopCount: t._loopCount }
+            this._fadeInTime = this.crossoverMode.fadeTime
             this.parent()
         },
         _intervalStep() {
             if (!this.crossoverTrack || !this.crossoverMode) return this.parent()
+            const inTrack = this.currentTrack.track
+            const outTrack = this.crossoverTrack.track
+
             if (ig.system.windowFocusLost) return
             const percentDone = !this._timer ? 1 : this._timer.delta().map(-this._timer.target, 0, 0, 1).limit(0, 1)
 
-            const inTrack = this.currentTrack.track
-            if (!(inTrack instanceof ig.TrackWebAudio)) throw new Error('not supported')
             const inVolumeMulti = this.crossoverMode!.fadeInSpline(percentDone)
-            inTrack.setVolume(inVolumeMulti * this._volume * this.currentTrack.volume)
-
-            const outTrack = this.crossoverTrack.track
-            if (!(outTrack instanceof ig.TrackWebAudio)) throw new Error('not supported')
             const outVolumeMulti = this.crossoverMode!.fadeOutSpline(percentDone)
+
+            inTrack.setVolume(inVolumeMulti * this._volume * this.currentTrack.volume)
             outTrack.setVolume(outVolumeMulti * this._volume * this.crossoverTrack.volume)
 
-            // console.log('in:', inVolumeMulti, 'out:', outVolumeMulti, 'inTest:', inTest, 'outTest:', outTest, 'sum:', outTest+inTest)
+            if (debug) console.log('in:', inVolumeMulti, 'out:', outVolumeMulti)
 
             if (percentDone == 1) {
                 this._endFadeIn()
                 outTrack.pause()
                 this.crossoverTrack = undefined
+                this.crossoverMode = undefined
             }
         },
     })
@@ -89,18 +107,35 @@ export function injectBgmCrossover() {
         play() {
             if (!ig.music.crossover) return this.parent()
 
-            if (this.bufferHandle && !this.playing && this.bufferHandle.loaded) {
-                this._startTime = ig.music.crossoverTrackData.startTime
-                this._loopCount = ig.music.crossoverTrackData.loopCount
-                this._pauseTime = ig.soundManager.context.getCurrentTime()
+            if (!(this.bufferHandle && !this.playing && this.bufferHandle.loaded)) throw new Error('huh')
 
-                ig.music.crossover = undefined
-                return this.parent()
-            } else throw new Error('huh')
+            this._startTime = ig.music.crossoverTrackData.startTime
+            this._loopCount = ig.music.crossoverTrackData.loopCount
+            this._pauseTime = ig.soundManager.context.getCurrentTime()
+
+            ig.music.crossover = undefined
+            if (debug) console.log('setting ig.music.crossover = undefined')
+            return this.parent()
         },
         pause() {
-            if (!ig.music.crossover || !ig.music.crossoverMode || ig.music.crossoverMode.fadeTime == 0)
+            if (
+                !ig.music.crossover ||
+                !ig.music.crossoverMode ||
+                ig.music.crossoverMode.fadeTime == 0 ||
+                sc.model.currentState == sc.GAME_MODEL_STATE.TITLE
+            ) {
+                if (debug) {
+                    console.groupCollapsed('pause', this.cacheKey)
+                    console.trace()
+                    console.groupEnd()
+                }
                 return this.parent()
+            }
+            if (debug) {
+                console.groupCollapsed('cancel pause', this.cacheKey)
+                console.trace()
+                console.groupEnd()
+            }
         },
     })
 }
