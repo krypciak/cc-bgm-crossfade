@@ -1,6 +1,6 @@
 {
     "id": "cc-bgm-crossover",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "title": "Music crossover",
     "description": "Adds API for smoothly switching between the regular and battle background music",
     "repository": "https://github.com/krypciak/cc-bgm-crossover",
