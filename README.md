@@ -1,6 +1,6 @@
 <!-- markdownlint-disable MD013 MD024 MD001 MD045 -->
 
-# cc-bgm-crossover
+# cc-bgm-crossfade
 Adds API for smoothly switching between the regular and battle background music
 
 ## Usage
@@ -24,8 +24,8 @@ ig.BGM_DEFAULT_TRACKS.myTrack = {
 ## Building
 
 ```bash
-git clone https://github.com/krypciak/cc-bgm-crossover
-cd cc-bgm-crossover
+git clone https://github.com/krypciak/cc-bgm-crossfade
+cd cc-bgm-crossfade
 pnpm install
 pnpm run start
 # this should return no errors (hopefully)
