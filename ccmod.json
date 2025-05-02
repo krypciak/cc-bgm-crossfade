@@ -4,7 +4,10 @@
     "title": "Music crossover",
     "description": "Adds API for smoothly switching between the regular and battle background music",
     "repository": "https://github.com/krypciak/cc-bgm-crossover",
-    "tags": ["library"],
+    "tags": ["library", "music"],
     "authors": "krypek",
+    "icons": {
+        "24": "icon/icon.png"
+    },
     "plugin": "plugin.js"
 }
