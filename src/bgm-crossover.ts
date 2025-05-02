@@ -7,7 +7,7 @@ declare global {
             fadeTime: number
         }
         interface Config {
-            fieldBattleCrossface?: ig.BGM_DEFAULT_TRACKS.CrossfaceConfig
+            fieldBattleCrossfade?: ig.BGM_DEFAULT_TRACKS.CrossfaceConfig
         }
     }
 }
@@ -34,7 +34,7 @@ export function injectBgmCrossover() {
     ig.Bgm.inject({
         pushDefaultTrackType(type, mode) {
             if (ig.game.isReset || !this.mapDefaultTrackSet) return this.parent(type, mode)
-            const targetMode = ig.BGM_DEFAULT_TRACKS[this.mapDefaultTrackSet.name].fieldBattleCrossface
+            const targetMode = ig.BGM_DEFAULT_TRACKS[this.mapDefaultTrackSet.name].fieldBattleCrossfade
             if (!targetMode || (type != 'field' && type != 'battle' && type != 'rankBattle'))
                 return this.parent(type, mode)
             if (debug) {
@@ -49,7 +49,7 @@ export function injectBgmCrossover() {
         popDefaultTrackType(mode) {
             if (ig.game.isReset || !this.mapDefaultTrackSet) return this.parent(mode)
             const type = this.defaultTrackTypeStack.last()
-            const targetMode = ig.BGM_DEFAULT_TRACKS[this.mapDefaultTrackSet.name].fieldBattleCrossface
+            const targetMode = ig.BGM_DEFAULT_TRACKS[this.mapDefaultTrackSet.name].fieldBattleCrossfade
             if (!targetMode || (type != 'field' && type != 'battle' && type != 'rankBattle')) return this.parent(mode)
             if (debug) {
                 console.groupCollapsed('pop', type)
