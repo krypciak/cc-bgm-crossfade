@@ -1,6 +1,6 @@
 {
     "id": "cc-bgm-crossfade",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "title": "Music crossfade",
     "description": "Adds API for smoothly switching between the regular and battle background music",
     "repository": "https://github.com/krypciak/cc-bgm-crossfade",
