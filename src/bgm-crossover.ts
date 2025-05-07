@@ -95,7 +95,12 @@ export function injectBgmCrossover() {
             const inTrack = this.currentTrack.track
             const outTrack = this.crossoverTrack.track
 
-            if (ig.system.windowFocusLost) return
+            if (ig.system.windowFocusLost) {
+                outTrack.pause()
+                return
+            } else if (!outTrack.playing) {
+                outTrack.play()
+            }
             const percentDone = !this._timer ? 1 : this._timer.delta().map(-this._timer.target, 0, 0, 1).limit(0, 1)
 
             const inVolumeMulti = this.crossoverMode!.fadeInSpline(percentDone)
