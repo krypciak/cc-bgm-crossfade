@@ -3,6 +3,11 @@
 # Change Log
 
 ## [Unreleased]
+
+### Fixed
+
+- Fix BGM stopping when `rankBattle` == `sRankBattle` (#1)
+
 ## [1.0.2] 2025-05-02
 
 ### Fixed

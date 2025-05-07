@@ -34,9 +34,12 @@ export function injectBgmCrossover() {
     ig.Bgm.inject({
         pushDefaultTrackType(type, mode) {
             if (ig.game.isReset || !this.mapDefaultTrackSet) return this.parent(type, mode)
-            const targetMode = ig.BGM_DEFAULT_TRACKS[this.mapDefaultTrackSet.name].fieldBattleCrossfade
-            if (!targetMode || (type != 'field' && type != 'battle' && type != 'rankBattle'))
+            const trackSet = ig.BGM_DEFAULT_TRACKS[this.mapDefaultTrackSet.name]
+            const targetMode = trackSet.fieldBattleCrossfade
+            if (targetMode && type == 'sRankBattle' && trackSet.rankBattle?.track == trackSet.sRankBattle?.track) return
+            if (!targetMode || (type != 'field' && type != 'battle' && type != 'rankBattle')) {
                 return this.parent(type, mode)
+            }
             if (debug) {
                 console.groupCollapsed('push', type)
                 console.trace()
@@ -49,7 +52,15 @@ export function injectBgmCrossover() {
         popDefaultTrackType(mode) {
             if (ig.game.isReset || !this.mapDefaultTrackSet) return this.parent(mode)
             const type = this.defaultTrackTypeStack.last()
-            const targetMode = ig.BGM_DEFAULT_TRACKS[this.mapDefaultTrackSet.name].fieldBattleCrossfade
+            const trackSet = ig.BGM_DEFAULT_TRACKS[this.mapDefaultTrackSet.name]
+            const targetMode = trackSet.fieldBattleCrossfade
+            if (
+                targetMode &&
+                type == 'rankBattle' &&
+                sc.model.isSRank() &&
+                trackSet.rankBattle?.track == trackSet.sRankBattle?.track
+            )
+                return
             if (!targetMode || (type != 'field' && type != 'battle' && type != 'rankBattle')) return this.parent(mode)
             if (debug) {
                 console.groupCollapsed('pop', type)

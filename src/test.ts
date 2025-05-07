@@ -24,7 +24,7 @@ ig.BGM_DEFAULT_TRACKS.myTrack = {
     field: { track: 'female', volume: 1 },
     battle: { track: 'male', volume: 1 },
     rankBattle: { track: 'male', volume: 1 },
-    sRankBattle: { track: 's-rank', volume: 1 },
+    sRankBattle: { track: 'male', volume: 1 },
     fieldBattleCrossfade: {
         fadeTime: 2,
         fadeInSpline: t => Math.sqrt(t),
