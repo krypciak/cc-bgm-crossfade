@@ -1,6 +1,9 @@
 <!-- markdownlint-disable MD013 MD024 MD001 MD045 -->
 
 # cc-bgm-crossfade
+
+[![CCModManager badge](https://raw.githubusercontent.com/CCDirectLink/CCModManager/refs/heads/master/icon/badge.png)](https://github.com/CCDirectLink/CCModManager)
+
 Adds API for smoothly switching between the regular and battle background music
 
 ## Usage
